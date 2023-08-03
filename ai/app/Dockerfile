@@ -3,7 +3,8 @@ FROM python:3.11
 ENV PORT 8000
 WORKDIR /app
 
-RUN pip install fastapi uvicorn genai ibm-generative-ai LangChain
+ADD requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt && cat /usr/local/lib/python3.11/site-packages/genai/extensions/langchain/__init__.py
 COPY . . 
 
 EXPOSE $PORT
