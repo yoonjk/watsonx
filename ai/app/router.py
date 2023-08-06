@@ -15,15 +15,16 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 """
 from config import getConfig
 # models
-from schemas import Message, PromptMessage
+from schemas import Message, PromptMessage, BOOKS, Book
+
 
 api_key = os.getenv("GENAI_KEY", None) 
 api_url = os.getenv("GENAI_URL", None)
 
 creds = Credentials(api_key, api_endpoint=api_url)
-route = APIRouter(prefix='/api/v1')
+api = APIRouter(prefix='/api/v1')
 
-@route.post('/message', tags = ["watsonx"], 
+@api.post('/message', tags = ["watsonx"], 
           description="prompt message",     
           responses={
             404: {"model": Message, "description": "The item was not found"},
@@ -44,12 +45,14 @@ async def callWatson(body: PromptMessage):
         params = GenerateParams(decoding_method="greedy")
         langchain_model = LangChainInterface(model="google/flan-ul2", params=params, credentials=creds)
         result = langchain_model('Answer this question:{}'.format(body.message))
-        transMessage = langTranslate(result, 'en', 'ko')
-        voiceText = transMessage.get('translations')
-        msg = voiceText[0] 
-        print(msg.get('translation'))
+        print("------------result:", result)
+        #transMessage = langTranslate(result, 'en', 'ko')
+        #voiceText = transMessage.get('translations')
+        #msg = voiceText[0] 
+        #print(msg.get('translation'))
 
-        return msg
+        #return msg
+        return result
 
 def langTranslate(message: str, source: str, target: str):
     apikey=os.environ['LANG_TRANSLATOR_APIKEY']

@@ -1,24 +1,12 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
-from router import route
+from swagger import tags_metadata
 
-tags_metadata = [
-    {
-        "name": "watsonx",
-        "description": "Users Operations with Watsonx.",
-    },
-    {
-        "name": "items",
-        "description": "Manage items. So _fancy_ they have their own docs.",
-        "externalDocs": {
-            "description": "Items external docs",
-            "url": "https://fastapi.tiangolo.com/",
-        },
-    },
-]
+# Import user define router
+from router import api
+from lab01.app import book
 
 app = FastAPI(servers=[{"url": "http://example.com", "description": "test"}], openapi_tags=tags_metadata)
-
 
 def custom_openapi() -> dict:
     if app.openapi_schema:
@@ -29,6 +17,7 @@ def custom_openapi() -> dict:
         version="3.0.1",
         description="Custom description",
         routes=app.routes
+
     )
     http_methods = ["post", "get", "put", "delete"]
     # look for the error 422 and removes it
@@ -48,5 +37,7 @@ def custom_openapi() -> dict:
     return app.openapi_schema
 
 app.openapi = custom_openapi 
-app.include_router(route)
 
+# Add router
+app.include_router(api)
+app.include_router(book)
