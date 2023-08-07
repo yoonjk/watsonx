@@ -33,7 +33,22 @@ BOOKS = [
     Book(6, 'HP2', ' Author3', 'Book Description', 1) 
 ]
 
+class BookRequest(BaseModel):
+    id: int
+    title: str = Field(title='id is not needed', min_length = 3)
+    author: str = Field(min_length = 3)
+    description: str = Field(min_length = 10)
+    rating: int = Field(gt = 0, le = 5)
 
-    
+    class Config: 
+        schema_extra = {
+            'example': {
+                'id' : 0,
+                'title' : 'A new book',
+                'author' : 'coding', 
+                'description' : 'A new description of a book',
+                'rating' : 5
+            }
+        }
 
 
