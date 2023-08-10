@@ -4,6 +4,7 @@ from swagger import tags_metadata
 
 # Import user define router
 from router import api
+
 from lab01.app import book
 
 app = FastAPI(servers=[{"url": "http://example.com", "description": "test"}], openapi_tags=tags_metadata)

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Path, HTTPException
 # models
 from schemas import BOOKS, BookRequest, Book
+from starlette import status 
 
 book = APIRouter(prefix='/api/v1')
 
@@ -8,8 +9,8 @@ book = APIRouter(prefix='/api/v1')
 async def read_all_books():
   return BOOKS
 
-@book.get("/books/{book_id}", tags = ['books'])
-async def read_book(book_id: int):
+@book.get("/books/{book_id}", tags = ['books'], status_code = status.HTTP_200_OK)
+async def read_book(book_id: int = Path(gt = 0)):
   for book in BOOKS:
     if (book.id == book_id ):
       return book
@@ -31,18 +32,24 @@ async def create_book(book_request : BookRequest):
   BOOKS.append(find_book_id(new_book))
 
 
-@book.put("/books", tags = ['books'])
+@book.put("/books", tags = ['books'], status_code = status.HTTP_204_NO_CONTENT)
 async def update_book(book : BookRequest):
+  book_changed = False
   for i in range(len(BOOKS)):
     if BOOKS[i].id == book.id:
       BOOKS[i] = book
+      
+  if not book_changed:
+    raise HTTPException(status_code = 404, detail = 'Item not found')
   
-@book.delete("/books/{book_id}", tags = ['books'])  
-async def delete_book(book_id : int):
+@book.delete("/books/{book_id}", tags = ['books'], status_code = status.HTTP_204_NO_CONTENT)  
+async def delete_book(book_id : int = Path(gt = 0)):
   for i in range(len(BOOKS)):
     if BOOKS[i].id == book_id: 
       BOOKS.pop(i)
       break
+
+  raise HTTPException(status_code = 404, detail = 'Item not found')
 
 def find_book_id(book: Book):
   book.id = 1 if len(BOOKS) == 0 else BOOKS[-1].id + 1
