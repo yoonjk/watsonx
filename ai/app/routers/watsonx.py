@@ -13,14 +13,15 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 """ 
 	User Define
 """
-from config import getConfig
+
 # models
 from schemas import Message, PromptMessage
-
+from config import getConfig
 
 api_key = os.getenv("GENAI_KEY", None) 
 api_url = os.getenv("GENAI_URL", None)
 
+print('api_key:', api_key)
 creds = Credentials(api_key, api_endpoint=api_url)
 router = APIRouter(prefix='/api/v1')
 

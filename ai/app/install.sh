@@ -9,3 +9,5 @@ pip install "passlib[bcrypt]"
 
 # token
 pip install python-multipart
+# jwt
+pip install "python-jose[cryptography]"
