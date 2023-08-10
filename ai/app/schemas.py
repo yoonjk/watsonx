@@ -1,6 +1,12 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 
+class TodoRequest(BaseModel):
+  title: str = Field(min_length = 3)
+  description: str = Field(min_length = 3, max_length=100)
+  priority: int = Field(gt = 0, lt = 6)
+  complete: bool
+  
 class Message(BaseModel):
     message: str = Field(None, title="Watsonx AI Platform", description="Dict or String?")
     source: Optional[str] = Field(None, title="source language", description="Dict or String?")

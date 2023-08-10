@@ -1,13 +1,15 @@
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from swagger import tags_metadata
+from database import engine
 
 # Import user define router
-from router import api
-
-from lab01.app import book
+from routers import todos, books, watsonx
+import models 
 
 app = FastAPI(servers=[{"url": "http://example.com", "description": "test"}], openapi_tags=tags_metadata)
+
+models.Base.metadata.create_all(bind=engine)
 
 def custom_openapi() -> dict:
     if app.openapi_schema:
@@ -40,5 +42,6 @@ def custom_openapi() -> dict:
 app.openapi = custom_openapi 
 
 # Add router
-app.include_router(api)
-app.include_router(book)
+app.include_router(watsonx.router)
+app.include_router(todos.router)
+app.include_router(books.router)
