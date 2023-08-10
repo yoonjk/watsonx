@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Path, HTTPException, Depends
 import models 
-from models import Todos
+
 from database import SessionLocal
 from typing import Annotated
 from starlette import status
 from sqlalchemy.orm import Session 
 # user define schemas
 from schemas import TodoRequest 
+from models import Todos
 
 router = APIRouter(prefix = "/api/v1") 
 
@@ -26,14 +27,16 @@ async def read_all(db:db_dependency):
 
 
 @router.get("/todos/{todo_id}", tags=['todos'], status_code = status.HTTP_200_OK)
-async def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
+async def read_todo(db: db_dependency, 
+                    todo_id: int = Path(gt=0)):
   todo_model = db.query(Todos).filter(Todos.id == todo_id).first() 
   if todo_model is not None:
     return todo_model 
   raise HTTPException(status_code = 404, detail='Todo not found')
 
 @router.post("/todos", tags = ['todos'], status_code = status.HTTP_201_CREATED)
-async def create_todo(db: db_dependency, todo_request: TodoRequest):
+async def create_todo(db: db_dependency, 
+                      todo_request: TodoRequest):
   todo_model = Todos(**todo_request.dict())
   
   db.add(todo_model)
@@ -55,7 +58,8 @@ async def update_todo(db: db_dependency, todo_request: TodoRequest, todo_id: int
   db.commit()
   
 @router.delete("/todos/{todo_id}", tags = ['todos'],  status_code = status.HTTP_204_NO_CONTENT)
-async def delete_todo(db: db_dependency, todo_id: int = Path(gt = 0)):
+async def delete_todo(db: db_dependency, 
+                      todo_id: int = Path(gt = 0)):
   todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     
   if todo_model is None:
