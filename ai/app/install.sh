@@ -11,3 +11,9 @@ pip install "passlib[bcrypt]"
 pip install python-multipart
 # jwt
 pip install "python-jose[cryptography]"
+
+# postgres lib
+pip install psycopg2-binary
+
+# mysql lib
+pip install pymysql
