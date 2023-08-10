@@ -34,7 +34,7 @@ BOOKS = [
 ]
 
 class BookRequest(BaseModel):
-    id: int
+    id: Optional[int] = Field(title = 'id is not needed')
     title: str = Field(title='id is not needed', min_length = 3)
     author: str = Field(min_length = 3)
     description: str = Field(min_length = 10)
@@ -43,7 +43,6 @@ class BookRequest(BaseModel):
     class Config: 
         schema_extra = {
             'example': {
-                'id' : 0,
                 'title' : 'A new book',
                 'author' : 'coding', 
                 'description' : 'A new description of a book',

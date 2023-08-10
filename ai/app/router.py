@@ -42,17 +42,18 @@ async def callWatson(body: PromptMessage):
         print("\n------------- Example (LangChain)-------------\n")
     
         #translate(body)
-        params = GenerateParams(decoding_method="greedy")
+        params = GenerateParams(decoding_method="greedy", max_new_tokens=700)
+        
         langchain_model = LangChainInterface(model="google/flan-ul2", params=params, credentials=creds)
-        result = langchain_model('Answer this question:{}'.format(body.message))
+        result = langchain_model('{}'.format(body.message))
         print("------------result:", result)
-        #transMessage = langTranslate(result, 'en', 'ko')
-        #voiceText = transMessage.get('translations')
-        #msg = voiceText[0] 
-        #print(msg.get('translation'))
+        transMessage = langTranslate(result, 'en', 'ko')
+        voiceText = transMessage.get('translations')
+        msg = voiceText[0] 
+        print(msg.get('translation'))
 
-        #return msg
-        return result
+        return msg
+        # return result
 
 def langTranslate(message: str, source: str, target: str):
     apikey=os.environ['LANG_TRANSLATOR_APIKEY']
