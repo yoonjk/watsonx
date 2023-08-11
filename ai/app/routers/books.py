@@ -1,10 +1,40 @@
-from fastapi import APIRouter, Path, HTTPException
+from fastapi import APIRouter, HTTPException, File, UploadFile, BackgroundTasks
 # models
 from schemas import BOOKS, BookRequest, Book
 from starlette import status 
+from typing import Annotated
+import shutil, os, uuid
+from pathlib import Path
 
 router = APIRouter(prefix='/api/v1')
+def unique_id():
+    return str(uuid.uuid4())
 
+def delete_file(filename):
+    os.remove(filename)
+
+def save_upload_file(upload_file: UploadFile, destination: Path) -> str:
+    try:
+        with destination.open("wb") as buffer:
+            shutil.copyfileobj(upload_file.file, buffer)
+            file_name = buffer.name
+            print(type(file_name))
+    finally:
+        upload_file.file.close()
+    return file_name
+
+@router.post("/books/files")
+async def create_file(uploaded_file: UploadFile):
+  try:
+    contents = await uploaded_file.read()
+    file_location = f"./files/{unique_id()}-{uploaded_file.filename}"
+    with open(file_location, "wb+") as file_object:
+      shutil.copyfileobj(uploaded_file.file, file_object) 
+  finally:
+    uploaded_file.close()
+    
+  return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
+  
 @router.get("/books", tags = ["books"])
 async def read_all_books():
   return BOOKS

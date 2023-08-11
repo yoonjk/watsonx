@@ -7,6 +7,9 @@ import models
 from swagger import tags_metadata
 from database import engine
 from config import getConfig
+import logging 
+
+log = logging.getLogger(__name__)
 
 app = FastAPI(servers=[{"url": "http://example.com", "description": "test"}], openapi_tags=tags_metadata)
 
