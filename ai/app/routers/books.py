@@ -4,11 +4,12 @@ from schemas import BOOKS, BookRequest, Book
 from starlette import status 
 from typing import Annotated
 import shutil, os, uuid
+from datetime import datetime, timedelta
 from pathlib import Path
 
 router = APIRouter(prefix='/api/v1')
 def unique_id():
-    return str(uuid.uuid4())
+    return (datetime.utcnow() + timedelta(hours=9)).strftime('%Y%m%d%H%M%S%f')
 
 def delete_file(filename):
     os.remove(filename)
