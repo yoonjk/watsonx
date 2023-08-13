@@ -4,6 +4,8 @@ pip install ibm-generative-ai
 pip install LangChain
 pip install --upgrade ibm-watson
 pip install sqlalchemy
+
+pip install sentence_transformers
 # bcrypt lib
 pip install "passlib[bcrypt]"
 
